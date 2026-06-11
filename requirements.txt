@@ -1,32 +1,22 @@
-# PyTorch: Core deep learning framework used for building and training the Transformer model
+# Deep Learning Framework
 torch
 
-# Hugging Face Datasets: Used for easily downloading, processing, and handling the machine translation datasets
+# Hugging Face Libraries
 datasets
-
-# Hugging Face Tokenizers: Used for building, training, and applying subword tokenizers (like BPE) for text preprocessing
 tokenizers
 
-# SacreBLEU: The standard metric used to evaluate the quality of machine translation outputs
+# Metrics
 sacrebleu
 
-# Matplotlib: Used for plotting training curves (loss, learning rate) and visualizing attention weights
+# Data Science & Plotting
 matplotlib
-
-# Pandas: Data manipulation and analysis library, useful for handling structured data, logging results, or exploring data
 pandas
-
-# tqdm: Provides fast, extensible progress bars to visualize the progress of training and evaluation loops
-tqdm
-
-# NumPy: Fundamental package for numerical computing in Python, used for array manipulation and metrics calculation
 numpy
-
-# Scikit-learn: General machine learning utilities, useful for tasks like splitting datasets or preprocessing
 scikit-learn
 
-# Jupyter: Interactive computing environment, required to run the final project notebook
-jupyter
+# Utilities
+tqdm
 
-# IPyKernel: Provides the IPython kernel for Jupyter, allowing the execution of Python code within the notebooks
+# Jupyter Notebook
+jupyter
 ipykernel

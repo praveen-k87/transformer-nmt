@@ -1,0 +1,5 @@
+[MASTER]
+ignore=.git,tests
+
+[MESSAGES CONTROL]
+disable=line-too-long
