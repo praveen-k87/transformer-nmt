@@ -1,0 +1,1 @@
+BLEU Score (Greedy Decoding): 23.47\nBLEU Score (Beam Decoding): 24.77\n
