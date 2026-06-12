@@ -15,8 +15,14 @@ from tokenizers.pre_tokenizers import Whitespace
 from tokenizers.processors import TemplateProcessing
 from tokenizers.trainers import BpeTrainer
 
-from src.config import (BOS_TOKEN, EOS_TOKEN, OUTPUT_DIR, PAD_TOKEN, UNK_TOKEN,
-                        VOCAB_SIZE)
+from src.config import (
+    BOS_TOKEN,
+    EOS_TOKEN,
+    OUTPUT_DIR,
+    PAD_TOKEN,
+    UNK_TOKEN,
+    VOCAB_SIZE,
+)
 
 
 def train_tokenizer(texts: List[str], vocab_size: int = VOCAB_SIZE) -> Tokenizer:
@@ -42,7 +48,8 @@ def train_tokenizer(texts: List[str], vocab_size: int = VOCAB_SIZE) -> Tokenizer
 
     # Configure the BPE trainer with the target vocabulary size and required special tokens.
     trainer = BpeTrainer(
-        vocab_size=vocab_size, special_tokens=[PAD_TOKEN, BOS_TOKEN, EOS_TOKEN, UNK_TOKEN]
+        vocab_size=vocab_size,
+        special_tokens=[PAD_TOKEN, BOS_TOKEN, EOS_TOKEN, UNK_TOKEN],
     )
 
     # Train the tokenizer strictly from the provided text iterator.
@@ -72,6 +79,20 @@ def save_tokenizer(tokenizer: Tokenizer, path: Path) -> None:
     tokenizer.save(str(path))
 
 
+def load_existing_tokenizers() -> Tuple[Tokenizer, Tokenizer]:
+    """Strictly loads tokenizers from disk without training them.
+
+    Used during evaluation to prevent data leakage.
+    """
+    src_path = OUTPUT_DIR / "src_tokenizer.json"
+    tgt_path = OUTPUT_DIR / "tgt_tokenizer.json"
+
+    if not src_path.exists() or not tgt_path.exists():
+        raise FileNotFoundError("Tokenizer files not found. Run train.py first.")
+
+    return load_tokenizer(src_path), load_tokenizer(tgt_path)
+
+
 def load_tokenizer(path: Path) -> Tokenizer:
     """Loads a serialized Tokenizer object from a JSON file.
 
@@ -84,7 +105,9 @@ def load_tokenizer(path: Path) -> Tokenizer:
     return Tokenizer.from_file(str(path))
 
 
-def get_or_train_tokenizers(train_pairs: List[Tuple[str, str]]) -> Tuple[Tokenizer, Tokenizer]:
+def get_or_train_tokenizers(
+    train_pairs: List[Tuple[str, str]],
+) -> Tuple[Tokenizer, Tokenizer]:
     """Retrieves existing tokenizers from disk, or trains new ones if they don't exist.
 
     This ensures tokenizers are only trained once and reused for inference/evaluation.

@@ -14,13 +14,7 @@ from src.config import BOS_IDX, EOS_IDX
 
 def _generate_causal_mask(size: int, device: torch.device) -> torch.Tensor:
     """Generates a causal look-ahead mask dynamically."""
-    tgt_mask = (torch.triu(torch.ones(size, size)) == 1).transpose(0, 1)
-    return (
-        tgt_mask.float()
-        .masked_fill(tgt_mask == 0, float("-inf"))
-        .masked_fill(tgt_mask == 1, float(0.0))
-        .to(device)
-    )
+    return torch.tril(torch.ones((size, size), device=device)).bool()
 
 
 def greedy_decode(

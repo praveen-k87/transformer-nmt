@@ -17,7 +17,7 @@ from src.config import (
 from src.data import preprocess_text
 from src.inference import greedy_decode
 from src.masks import create_source_padding_mask
-from src.tokenizer_train import decode_target, get_or_train_tokenizers
+from src.tokenizer_train import decode_target, load_existing_tokenizers
 from src.transformer import Seq2SeqTransformer
 from src.utils import load_checkpoint
 
@@ -27,9 +27,9 @@ from src.utils import load_checkpoint
 def main():
     """Interactive translation interface."""
     print("Loading tokenizers...")
-    # We pass a dummy list to get_or_train_tokenizers as it expects some data
+    # We pass a dummy list to load_existing_tokenizers as it expects some data
     # to infer paths, but it will load existing tokenizers.
-    src_tokenizer, tgt_tokenizer = get_or_train_tokenizers([])
+    src_tokenizer, tgt_tokenizer = load_existing_tokenizers()
 
     model = Seq2SeqTransformer(
         src_vocab_size=src_tokenizer.get_vocab_size(),

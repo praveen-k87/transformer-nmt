@@ -150,4 +150,15 @@ def qualitative_comment(_src: str, _ref: str, _hyp: str) -> str:
     Returns:
         str: A placeholder comment string for analysis.
     """
-    return "Qualitative analysis to be added."
+    if not _hyp.strip():
+        return "No translation generated; semantic preservation failed."
+
+    hyp_tokens = set(_hyp.lower().split())
+    ref_tokens = set(_ref.lower().split())
+    overlap = len(hyp_tokens & ref_tokens)
+
+    if overlap >= 4:
+        return "Partial semantic overlap with the reference; grammar may still be imperfect."
+    if overlap >= 1:
+        return "Limited lexical overlap; translation captures only small fragments of the reference."
+    return "Very weak translation; source meaning is mostly not preserved."

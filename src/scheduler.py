@@ -45,6 +45,8 @@ class NoamScheduler:
         lr = self._get_lr()
         for param_group in self.optimizer.param_groups:
             param_group["lr"] = lr
+        
+        self.optimizer.step()
 
     def _get_lr(self) -> float:
         """Calculates the learning rate for the current step.

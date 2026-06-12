@@ -27,7 +27,7 @@ from src.data import load_and_preprocess_data
 from src.dataset import TranslationDataset, collate_fn
 from src.inference import beam_search_decode, greedy_decode
 from src.masks import create_source_padding_mask
-from src.tokenizer_train import decode_target, get_or_train_tokenizers
+from src.tokenizer_train import decode_target, load_existing_tokenizers
 from src.transformer import Seq2SeqTransformer
 from src.utils import ensure_output_dirs, load_checkpoint, qualitative_comment
 
@@ -42,7 +42,7 @@ def main() -> None:
 
     print("Loading tokenizers...")
     # Get existing tokenizers (they must have been created during training).
-    src_tokenizer, tgt_tokenizer = get_or_train_tokenizers(test_pairs)
+    src_tokenizer, tgt_tokenizer = load_existing_tokenizers()
 
     test_dataset = TranslationDataset(test_pairs, src_tokenizer, tgt_tokenizer)
     # Batch size is strictly 1 for autoregressive decoding implementation simplicity.

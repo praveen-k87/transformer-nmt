@@ -6,13 +6,18 @@ clean and normalize the text (Unicode NFC, lowercasing, and spacing out punctuat
 and yield parallel sentence pairs ready for tokenization.
 """
 
+import os
 import re
 import unicodedata
 from typing import List, Tuple
 
 from datasets import load_dataset
+from dotenv import load_dotenv
 
 from src.config import DATASET_NAME, SRC_LANG, TGT_LANG
+
+# Load environment variables from .env file if present
+load_dotenv()
 
 
 def load_and_preprocess_data() -> (
@@ -30,7 +35,9 @@ def load_and_preprocess_data() -> (
             training, validation, and test sets respectively. Empty sentences are filtered out.
     """
     # Load the specified bilingual dataset (e.g., 'bentrevett/multi30k')
-    dataset = load_dataset(DATASET_NAME)
+    # Use HF_TOKEN from environment if available to prevent rate limits or warnings.
+    hf_token = os.environ.get("HF_TOKEN")
+    dataset = load_dataset(DATASET_NAME, token=hf_token)
 
     train_pairs: List[Tuple[str, str]] = []
     val_pairs: List[Tuple[str, str]] = []
@@ -109,7 +116,8 @@ def show_preprocessing_examples(
 def main() -> None:
     """Local test execution."""
     # Local execution guard for testing the module directly
-    raw_dataset = load_dataset(DATASET_NAME)
+    hf_token = os.environ.get("HF_TOKEN")
+    raw_dataset = load_dataset(DATASET_NAME, token=hf_token)
     raw_train_pairs = [(ex[SRC_LANG], ex[TGT_LANG]) for ex in raw_dataset["train"]]
 
     train_pairs, val_pairs, test_pairs = load_and_preprocess_data()

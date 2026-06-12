@@ -20,3 +20,4 @@ tqdm
 # Jupyter Notebook
 jupyter
 ipykernel
+python-dotenv
