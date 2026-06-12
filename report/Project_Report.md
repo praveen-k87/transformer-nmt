@@ -152,8 +152,3 @@ The model was trained for 8 epochs using Adam optimizer and a Noam Learning Rate
 ## 11. Conclusion
 
 The implementation successfully demonstrated the efficacy of the full Sequence-to-Sequence Transformer paradigm, achieving strong baseline BLEU scores using zero external pretrained weights. The model explicitly mapped English to German via proper cross-attention masking and Noam scheduled gradient descent.
-
-## 12. References
-
-1. Vaswani, A., et al. (2017). "Attention Is All You Need."
-2. Sennrich, R., et al. (2015). "Neural Machine Translation of Rare Words with Subword Units."
