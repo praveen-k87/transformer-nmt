@@ -1,12 +1,15 @@
 # Full Sequence-to-Sequence Encoder-Decoder Transformer for Neural Machine Translation
+
 **Implemented from scratch in PyTorch without pretrained translation models or torch.nn.Transformer.**
 
 ## Project Overview
-This repository contains a mathematically precise implementation of the original "Attention Is All You Need" Transformer architecture. Built entirely from scratch, the model maps English source sequences to German target sequences using a full Encoder-Decoder paradigm with Cross-Attention. 
+
+This repository contains a mathematically precise implementation of the original "Attention Is All You Need" Transformer architecture. Built entirely from scratch, the model maps English source sequences to German target sequences using a full Encoder-Decoder paradigm with Cross-Attention.
 
 The model is trained on the `bentrevett/multi30k` dataset, a high-quality corpus of bilingual image captions.
 
 ## Key Features
+
 - **Zero Pretrained Libraries**: No `torch.nn.Transformer`, Hugging Face pipelines, or pre-trained translation weights are used.
 - **Dual BPE Tokenizers**: Two distinct Word-Level Byte-Pair Encoding (BPE) tokenizers trained strictly on the training set to respect the independent morphology of English and German.
 - **Cross-Attention Mapping**: Explicit Query (from Decoder), Key (from Encoder), and Value (from Encoder) passing for robust autoregressive alignment.
@@ -14,14 +17,16 @@ The model is trained on the `bentrevett/multi30k` dataset, a high-quality corpus
 - **Robust Evaluation**: Comprehensive SacreBLEU evaluation for both Greedy Decoding and Beam Search Decoding.
 
 ## Architecture Summary
-| Component | Implementation Details |
-|---|---|
-| **Embedding** | Vocabulary Lookup + Sinusoidal Positional Encoding |
-| **Encoder** | Multi-Head Self-Attention + Position-Wise Feed-Forward Network |
-| **Decoder** | Masked Self-Attention + Cross-Attention + Position-Wise Feed-Forward Network |
-| **Hyperparameters** | `d_model=256`, `heads=8`, `layers=3`, `dropout=0.1` |
+
+| Component           | Implementation Details                                                       |
+|---------------------|------------------------------------------------------------------------------|
+| **Embedding**       | Vocabulary Lookup + Sinusoidal Positional Encoding                           |
+| **Encoder**         | Multi-Head Self-Attention + Position-Wise Feed-Forward Network               |
+| **Decoder**         | Masked Self-Attention + Cross-Attention + Position-Wise Feed-Forward Network |
+| **Hyperparameters** | `d_model=256`, `heads=8`, `layers=3`, `dropout=0.1`                          |
 
 ## Repository Structure
+
 ```text
 transformer-nmt/
 │
@@ -56,7 +61,9 @@ transformer-nmt/
 ```
 
 ## Assignment Task Mapping
+
 This repository rigorously adheres to all academic assignment objectives:
+
 - **Task 1: Dual-Language Preprocessing**: Located in `src/data.py` with NFC preservation for German characters.
 - **Task 2: Shared vs Separate Tokenizer Training**: Located in `src/tokenizer_train.py` (Separate BPEs used for morphological independence).
 - **Task 3: Cross-Attention Mechanism**: Located in `src/transformer.py` (`DecoderLayer`).
@@ -65,17 +72,23 @@ This repository rigorously adheres to all academic assignment objectives:
 - **Task 6: Qualitative and Quantitative Translation Analysis**: Located in `evaluate.py`.
 
 ## Setup Instructions
+
 1. **Clone the repository**:
+
 ```bash
 git clone <repository-url>
 cd transformer-nmt
 ```
+
 2. **Create and activate a virtual environment**:
+
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 ```
+
 3. **Install dependencies**:
+
 ```bash
 pip install -r requirements.txt
 ```
@@ -85,36 +98,43 @@ pip install -r requirements.txt
 ## Commands
 
 ### 1. Training
+
 To train the Seq2Seq NMT model from scratch, run:
+
 ```bash
 python train.py
 ```
+
 *Outputs: `model.pt`, `training_curve.png`, `training_summary.txt`, `training_history.csv`*
 
 ### 2. Evaluation
+
 To evaluate the model on the hold-out test set and generate BLEU scores and samples, run:
+
 ```bash
 python evaluate.py
 ```
+
 *Outputs: `bleu_score.txt`, `sample_translations.csv`*
 
 ### 3. Interactive Translation
+
 To test the model live with custom English input, run:
+
 ```bash
 python translate.py
 ```
 
 ## Limitations
+
 - **Domain Overfitting**: The model is highly specific to the `multi30k` dataset, which consists exclusively of physical image descriptions. It will degrade or hallucinate when presented with complex, conversational English.
-- **Fixed Max Sequence Length**: The hard limit of `MAX_LEN=100` prevents processing very long documents, dropping the trailing syntax.
+- **Fixed Max Sequence Length**: The hard limit of `MAX_LEN=80` prevents processing very long documents, dropping the trailing syntax.
 
 ## Future Improvements
+
 - **Key-Value Caching**: The current autoregressive decoder recomputes keys and values for all past tokens at every step. Implementing a KV cache mechanism would significantly accelerate inference.
 - **WMT14 Expansion**: Upgrading the training corpus to the larger WMT14 English-German dataset to grant the model general conversational understanding.
 
 ## License
-MIT License.
 
-## References
-1. Vaswani, A., et al. (2017). "Attention Is All You Need." *Advances in Neural Information Processing Systems*.
-2. Sennrich, R., et al. (2015). "Neural Machine Translation of Rare Words with Subword Units." *ACL*.
+MIT License.
