@@ -111,7 +111,7 @@ We initialize the full `Seq2SeqTransformer`. We use **Teacher Forcing** during t
 cells.append(new_code_cell("""import pandas as pd
 from pathlib import Path
 
-output_dir = Path("outputs")
+output_dir = Path("../outputs") if Path("../outputs").exists() else Path("outputs")
 summary_file = output_dir / "training_summary.txt"
 
 if summary_file.exists():
