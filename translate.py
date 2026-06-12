@@ -27,8 +27,6 @@ from src.utils import load_checkpoint
 def main():
     """Interactive translation interface."""
     print("Loading tokenizers...")
-    # We pass a dummy list to load_existing_tokenizers as it expects some data
-    # to infer paths, but it will load existing tokenizers.
     src_tokenizer, tgt_tokenizer = load_existing_tokenizers()
 
     model = Seq2SeqTransformer(
