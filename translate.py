@@ -50,12 +50,14 @@ def main():
 
     model.eval()
 
-    print("\nInteractive Translation (English to German)")
-    print("Enter an English sentence or type 'exit' to quit.")
+    print(f"Using device: {DEVICE}")
+    print("Welcome to the NMT Interactive Translator!")
+    print("Type an English sentence and press Enter to translate it to German.")
+    print("Type 'exit' or 'quit' to close the program.")
 
     while True:
         english_sentence = input("\nEnglish: ")
-        if english_sentence.lower() == "exit":
+        if english_sentence.lower() == "exit" or english_sentence.lower() == "quit":
             break
 
         # Preprocess the input sentence

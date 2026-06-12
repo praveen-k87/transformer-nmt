@@ -1,102 +1,120 @@
 # Full Sequence-to-Sequence Encoder-Decoder Transformer for Neural Machine Translation
-
-**Implemented from scratch in PyTorch without pretrained translation models or `torch.nn.Transformer`.**
+**Implemented from scratch in PyTorch without pretrained translation models or torch.nn.Transformer.**
 
 ## Project Overview
-This project provides a complete, from-scratch implementation of the Transformer architecture for Neural Machine Translation (NMT). The model is trained to translate English to German using the `multi30k` dataset. It serves as a deep dive into the core mechanisms of the Transformer, including self-attention, cross-attention, causal masking, and positional encodings, all built manually.
+This repository contains a mathematically precise implementation of the original "Attention Is All You Need" Transformer architecture. Built entirely from scratch, the model maps English source sequences to German target sequences using a full Encoder-Decoder paradigm with Cross-Attention. 
+
+The model is trained on the `bentrevett/multi30k` dataset, a high-quality corpus of bilingual image captions.
 
 ## Key Features
-- **Full Encoder-Decoder Architecture**: Implements the complete sequence-to-sequence pipeline.
-- **Manual Implementation**: Built from scratch to demonstrate a fundamental understanding of the Transformer architecture.
-- **Separate Tokenizers**: Justified use of separate BPE tokenizers for source (English) and target (German) languages.
-- **Noam Scheduler**: Implements the learning rate scheduler and Teacher Forcing from the original "Attention is All You Need" paper.
-- **Inference Strategies**: Supports both Greedy Decoding and Beam Search for translation generation.
-- **Device Support**: Runs seamlessly on MPS (Apple Silicon), CUDA, or CPU.
-- **SonarQube Compliant**: The entire codebase achieves a 10.00/10 Pylint score and enforces strict static typing.
+- **Zero Pretrained Libraries**: No `torch.nn.Transformer`, Hugging Face pipelines, or pre-trained translation weights are used.
+- **Dual BPE Tokenizers**: Two distinct Word-Level Byte-Pair Encoding (BPE) tokenizers trained strictly on the training set to respect the independent morphology of English and German.
+- **Cross-Attention Mapping**: Explicit Query (from Decoder), Key (from Encoder), and Value (from Encoder) passing for robust autoregressive alignment.
+- **Noam Scheduler**: Custom learning rate scaling with warmup steps to prevent early gradient explosion during deep attention initialization.
+- **Robust Evaluation**: Comprehensive SacreBLEU evaluation for both Greedy Decoding and Beam Search Decoding.
+
+## Architecture Summary
+| Component | Implementation Details |
+|---|---|
+| **Embedding** | Vocabulary Lookup + Sinusoidal Positional Encoding |
+| **Encoder** | Multi-Head Self-Attention + Position-Wise Feed-Forward Network |
+| **Decoder** | Masked Self-Attention + Cross-Attention + Position-Wise Feed-Forward Network |
+| **Hyperparameters** | `d_model=512`, `heads=8`, `layers=3`, `dropout=0.1` |
 
 ## Repository Structure
-```
-encoder-decoder-transformer-nmt/
-├── README.md
-├── requirements.txt
-├── .env                  <-- (Create this for HuggingFace Token, ignored by git)
-├── .gitignore
-├── .pylintrc             <-- Strict linting configuration
-├── train.py
-├── evaluate.py
-├── translate.py
-├── src/
-│   ├── config.py         <-- Centralized hyperparameters
-│   ├── data.py           <-- Dataset fetching and text preprocessing
-│   ├── dataset.py        <-- PyTorch Dataset and collate functions
-│   ├── tokenizer_train.py
-│   ├── masks.py
-│   ├── transformer.py    <-- Core Architecture
-│   ├── scheduler.py
-│   ├── inference.py      <-- Greedy and Beam search logic
-│   └── utils.py
+```text
+transformer-nmt/
+│
 ├── notebooks/
-│   └── transformer_nmt.ipynb  <-- Gold standard submission notebook
-└── outputs/              <-- Generated artifacts go here
+│   └── transformer_nmt.ipynb    # Executable academic notebook with full tasks mapped
+├── report/
+│   ├── Project_Report.md        # Detailed academic report
+│   └── Project_Report.pdf       # Exported academic submission report
+├── src/
+│   ├── config.py                # Hyperparameters and path configurations
+│   ├── data.py                  # Dual-language preprocessing (NFC normalization)
+│   ├── dataset.py               # Dataset class with dynamic padding and MAX_LEN safeties
+│   ├── inference.py             # Greedy and Beam Search decoding implementations
+│   ├── masks.py                 # Source padding, Target causal, and Cross-Attention masking
+│   ├── scheduler.py             # Custom Noam Learning Rate scheduler
+│   ├── tokenizer_train.py       # BPE tokenizer training logic
+│   ├── transformer.py           # Core Transformer architecture (Encoder/Decoder/MHA)
+│   └── utils.py                 # Seeds, parameter counting, and plotting
+│
+├── outputs/                     # Generated artifacts (ignored by git unless requested)
+│   ├── src_tokenizer.json       # Trained English BPE vocabulary
+│   ├── tgt_tokenizer.json       # Trained German BPE vocabulary
+│   ├── model.pt                 # Best epoch PyTorch weights
+│   ├── training_curve.png       # Loss visualization
+│   ├── bleu_score.txt           # Final greedy and beam search SacreBLEU metrics
+│   └── sample_translations.csv  # Output samples with qualitative text analysis
+│
+├── train.py                     # Execution script for the training loop with Teacher Forcing
+├── evaluate.py                  # Execution script for test set SacreBLEU evaluation
+├── translate.py                 # Interactive terminal for live translations
+└── requirements.txt             # Environment dependencies
 ```
+
+## Assignment Task Mapping
+This repository rigorously adheres to all academic assignment objectives:
+- **Task 1: Dual-Language Preprocessing**: Located in `src/data.py` with NFC preservation for German characters.
+- **Task 2: Shared vs Separate Tokenizer Training**: Located in `src/tokenizer_train.py` (Separate BPEs used for morphological independence).
+- **Task 3: Cross-Attention Mechanism**: Located in `src/transformer.py` (`DecoderLayer`).
+- **Task 4: Positional and Padding Masking**: Located in `src/masks.py` and `src/inference.py`.
+- **Task 5: Training Loop with Teacher Forcing**: Located in `train.py`.
+- **Task 6: Qualitative and Quantitative Translation Analysis**: Located in `evaluate.py`.
 
 ## Setup Instructions
+1. **Clone the repository**:
+```bash
+git clone <repository-url>
+cd transformer-nmt
+```
+2. **Create and activate a virtual environment**:
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+3. **Install dependencies**:
+```bash
+pip install -r requirements.txt
+```
 
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/your-username/encoder-decoder-transformer-nmt.git
-    cd encoder-decoder-transformer-nmt
-    ```
+*(Note: The codebase automatically detects hardware acceleration, prioritizing `MPS` for Apple Silicon, `CUDA` for NVIDIA GPUs, and falling back to `CPU`).*
 
-2.  **Create a virtual environment and install dependencies:**
-    ```bash
-    python -m venv .venv
-    source .venv/bin/activate
-    pip install -r requirements.txt
-    ```
+## Commands
 
-3.  **HuggingFace API Token Setup:**
-    The dataset (`bentrevett/multi30k`) is downloaded via the HuggingFace datasets library. To prevent anonymous rate limits or connection warnings, provide your HF Token.
-    - Create a `.env` file in the root directory (this is automatically ignored by Git).
-    - Add the following line:
-      ```env
-      HF_TOKEN=hf_your_actual_token_here
-      ```
-    Alternatively, export it in your terminal: `export HF_TOKEN="hf_..."`
-
-## How to Run
-
-### 1. Train the Model
-This script will fetch the data, train the tokenizers (if they don't exist), initialize the Transformer, execute the training loop, and save the best checkpoint and training artifacts to the `outputs/` directory.
+### 1. Training
+To train the Seq2Seq NMT model from scratch, run:
 ```bash
 python train.py
 ```
+*Outputs: `model.pt`, `training_curve.png`, `training_summary.txt`, `training_history.csv`*
 
-### 2. Evaluate the Model
-This script strictly loads the existing tokenizers (preventing data leakage) and evaluates the trained model on the hold-out test set. It calculates the SacreBLEU score and generates qualitative CSV analyses using both Greedy and Beam Search decoding.
+### 2. Evaluation
+To evaluate the model on the hold-out test set and generate BLEU scores and samples, run:
 ```bash
 python evaluate.py
 ```
+*Outputs: `bleu_score.txt`, `sample_translations.csv`*
 
 ### 3. Interactive Translation
-Use this script to translate your own custom English sentences to German using your trained model.
+To test the model live with custom English input, run:
 ```bash
 python translate.py
 ```
 
-### 4. Jupyter Notebook (Assignment Submission)
-For the final assignment submission, open the meticulously documented Jupyter Notebook. It contains the written theoretical justifications required by the rubric alongside the executable code.
-```bash
-jupyter notebook notebooks/transformer_nmt.ipynb
-```
+## Limitations
+- **Domain Overfitting**: The model is highly specific to the `multi30k` dataset, which consists exclusively of physical image descriptions. It will degrade or hallucinate when presented with complex, conversational English.
+- **Fixed Max Sequence Length**: The hard limit of `MAX_LEN=100` prevents processing very long documents, dropping the trailing syntax.
 
-## Output Artifacts
-After running the scripts, the `outputs/` directory will contain:
-- `src_tokenizer.json` / `tgt_tokenizer.json`: The trained BPE tokenizers.
-- `model.pt`: The optimal model checkpoint.
-- `training_curve.png`: A visual plot of training and validation loss.
-- `sample_translations.csv`: Translation outputs with qualitative heuristic feedback.
-- `bleu_score.txt`: The numeric SacreBLEU evaluation metric.
+## Future Improvements
+- **Key-Value Caching**: The current autoregressive decoder recomputes keys and values for all past tokens at every step. Implementing a KV cache mechanism would significantly accelerate inference.
+- **WMT14 Expansion**: Upgrading the training corpus to the larger WMT14 English-German dataset to grant the model general conversational understanding.
 
 ## License
-This project is licensed under the MIT License.
+MIT License.
+
+## References
+1. Vaswani, A., et al. (2017). "Attention Is All You Need." *Advances in Neural Information Processing Systems*.
+2. Sennrich, R., et al. (2015). "Neural Machine Translation of Rare Words with Subword Units." *ACL*.

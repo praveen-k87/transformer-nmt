@@ -126,6 +126,7 @@ def main() -> None:
     ensure_output_dirs()
     set_seed(RANDOM_SEED)
 
+    print(f"Using device: {DEVICE}")
     print("Loading and preprocessing data...")
     train_pairs, val_pairs, _ = load_and_preprocess_data()
 
@@ -192,6 +193,15 @@ def main() -> None:
         f.write(f"Final training loss: {train_losses[-1]:.4f}\\n")
         f.write(f"Final validation loss: {val_losses[-1]:.4f}\\n")
         f.write(f"Best validation loss: {best_val_loss:.4f}\\n")
+
+    # Export numeric history to CSV for programmatic loading in the notebook
+    import pandas as pd
+    history_df = pd.DataFrame({
+        "epoch": range(1, EPOCHS + 1),
+        "train_loss": train_losses,
+        "val_loss": val_losses
+    })
+    history_df.to_csv(OUTPUT_DIR / "training_history.csv", index=False)
 
 
 if __name__ == "__main__":

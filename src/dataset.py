@@ -57,6 +57,13 @@ class TranslationDataset(Dataset):
         src_text, tgt_text = self.pairs[idx]
         src_ids = self.src_tokenizer.encode(src_text).ids
         tgt_ids = self.tgt_tokenizer.encode(tgt_text).ids
+
+        # Truncate sequences that exceed MAX_LEN while preserving the terminal [EOS] token
+        if len(src_ids) > self.max_len:
+            src_ids = src_ids[: self.max_len - 1] + [src_ids[-1]]
+        if len(tgt_ids) > self.max_len:
+            tgt_ids = tgt_ids[: self.max_len - 1] + [tgt_ids[-1]]
+
         return torch.tensor(src_ids), torch.tensor(tgt_ids), src_text, tgt_text
 
 

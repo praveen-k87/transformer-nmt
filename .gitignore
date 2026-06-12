@@ -143,13 +143,13 @@ MANIFEST
 # Trained models and checkpoints
 models/
 checkpoints/
-*.pt
+# *.pt (Commented out to allow model weights for assignment submission)
 *.pth
 *.h5
 *.hdf5
 
 # Output directories for experiments, plots, etc.
-outputs/
+# outputs/ (Commented out to allow generated evidence for assignment submission)
 results/
 
 # Log files

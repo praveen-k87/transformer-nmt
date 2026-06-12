@@ -155,10 +155,21 @@ def qualitative_comment(_src: str, _ref: str, _hyp: str) -> str:
 
     hyp_tokens = set(_hyp.lower().split())
     ref_tokens = set(_ref.lower().split())
-    overlap = len(hyp_tokens & ref_tokens)
 
-    if overlap >= 4:
-        return "Partial semantic overlap with the reference; grammar may still be imperfect."
-    if overlap >= 1:
-        return "Limited lexical overlap; translation captures only small fragments of the reference."
-    return "Very weak translation; source meaning is mostly not preserved."
+    if not ref_tokens:
+        return "Empty reference sentence."
+
+    if _hyp.lower() == _ref.lower():
+        return "Excellent translation: Perfect semantic and syntactic match with the reference."
+
+    overlap = len(hyp_tokens & ref_tokens)
+    overlap_ratio = overlap / len(ref_tokens)
+
+    if overlap_ratio >= 0.7:
+        return "Good translation: High lexical overlap; meaning is well preserved with minor syntactic differences."
+    if overlap_ratio >= 0.4:
+        return "Acceptable translation: Partial semantic overlap; core meaning is somewhat captured but grammar may be flawed."
+    if overlap > 0:
+        return "Poor translation: Limited lexical overlap; captures only fragmented concepts."
+
+    return "Failed translation: Source meaning is completely lost."

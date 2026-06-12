@@ -76,7 +76,9 @@ def preprocess_text(text: str) -> str:
     Returns:
         str: The fully preprocessed and normalized sentence.
     """
-    # Step 1: Unicode normalization (NFC composes characters, useful for German umlauts)
+    # Step 1: Unicode normalization
+    # NFC composes characters, which safely preserves German specific characters
+    # (like ä, ö, ü, ß) instead of decomposing or transliterating them away.
     text = unicodedata.normalize("NFC", text)
 
     # Step 2: Lowercasing

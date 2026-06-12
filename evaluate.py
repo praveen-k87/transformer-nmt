@@ -36,9 +36,13 @@ def main() -> None:
     """Main entrypoint for model evaluation and inference."""
     ensure_output_dirs()
 
+    print(f"Using device: {DEVICE}")
     print("Loading and preprocessing data...")
     # Discard train/val, we only care about the hold-out test set here.
     _, _, test_pairs = load_and_preprocess_data()
+    
+    # Use a subset of 500 pairs for evaluation to manage runtime, as beam search is computationally expensive.
+    test_pairs = test_pairs[:500]
 
     print("Loading tokenizers...")
     # Get existing tokenizers (they must have been created during training).
@@ -108,8 +112,11 @@ def main() -> None:
     print("Calculating BLEU score...")
     # SacreBLEU is the industry-standard BLEU implementation.
     # It expects references as a list-of-lists: [[ref_1_sys_1, ref_1_sys_2...], [ref_2_sys_1...]]
-    bleu = sacrebleu.corpus_bleu(greedy_translations, [reference_sentences])
-    print(f"\\nFinal BLEU Score (Greedy Decoding): {bleu.score:.2f}")
+    bleu_greedy = sacrebleu.corpus_bleu(greedy_translations, [reference_sentences])
+    bleu_beam = sacrebleu.corpus_bleu(beam_translations, [reference_sentences])
+    
+    print(f"\\nFinal BLEU Score (Greedy Decoding): {bleu_greedy.score:.2f}")
+    print(f"Final BLEU Score (Beam Search Decoding): {bleu_beam.score:.2f}")
 
     # Export translation samples to CSV for manual inspection.
     results_df = pd.DataFrame(
@@ -129,8 +136,9 @@ def main() -> None:
     # Export the numeric BLEU score.
     bleu_path = OUTPUT_DIR / "bleu_score.txt"
     with open(bleu_path, "w", encoding="utf-8") as f:
-        f.write(f"BLEU Score (Greedy Decoding): {bleu.score:.2f}\\n")
-    print(f"BLEU score saved to {bleu_path}")
+        f.write(f"BLEU Score (Greedy Decoding): {bleu_greedy.score:.2f}\\n")
+        f.write(f"BLEU Score (Beam Decoding): {bleu_beam.score:.2f}\\n")
+    print(f"BLEU scores saved to {bleu_path}")
 
 
 if __name__ == "__main__":
