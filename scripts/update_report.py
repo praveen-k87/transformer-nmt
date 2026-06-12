@@ -86,12 +86,12 @@ The model was trained for 8 epochs using Adam optimizer and a Noam Learning Rate
 **Hyperparameter Table:**
 | Parameter | Value |
 | --- | --- |
-| D_MODEL | 512 |
+| D_MODEL | 256 |
 | HEADS | 8 |
 | ENCODER LAYERS | 3 |
 | DECODER LAYERS | 3 |
 | BATCH SIZE | 32 |
-| MAX_LEN | 100 |
+| MAX_LEN | 80 |
 
 **Actual Trainable Parameter Count:** {params}
 

@@ -19,7 +19,7 @@ The model is trained on the `bentrevett/multi30k` dataset, a high-quality corpus
 | **Embedding** | Vocabulary Lookup + Sinusoidal Positional Encoding |
 | **Encoder** | Multi-Head Self-Attention + Position-Wise Feed-Forward Network |
 | **Decoder** | Masked Self-Attention + Cross-Attention + Position-Wise Feed-Forward Network |
-| **Hyperparameters** | `d_model=512`, `heads=8`, `layers=3`, `dropout=0.1` |
+| **Hyperparameters** | `d_model=256`, `heads=8`, `layers=3`, `dropout=0.1` |
 
 ## Repository Structure
 ```text
