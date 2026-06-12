@@ -72,7 +72,47 @@ The model was trained for 8 epochs using Adam optimizer and a Noam Learning Rate
 | Beam Search Decoding | 24.65 |
 
 **Five Sample Translations & Qualitative Analysis:**
-**Source (English):** three boys wearing green shirts and tan pants pose at the top of a slide .\n**Reference (German):** drei jungen in grünen shirts und braunen hosen posieren auf dem oberteil einer rutsche .\n**Greedy Translation:** drei jungen in grünen hemden posieren auf einer grünen rutsche .\n**Beam Translation:** drei jungen in grünen hemden und hellbraunen hosen posieren auf einer rutsche .\n**Qualitative Analysis:** Acceptable translation: Partial semantic overlap; core meaning is somewhat captured but grammar may be flawed.\n\n---\n\n**Source (English):** a female performer with a violin plays on a street while a woman with a blue guitar looks on .\n**Reference (German):** eine musikantin mit einer violine spielt auf der straße während eine frau mit einer blauen gitarre zusieht .\n**Greedy Translation:** eine frau mit einer blauen gitarre spielt auf einer straße , während eine gitarre mit einer gitarre zuschaut .\n**Beam Translation:** eine frau mit einer blauen gitarre spielt auf einer straße , während eine gitarre zuschaut .\n**Qualitative Analysis:** Good translation: High lexical overlap; meaning is well preserved with minor syntactic differences.\n\n---\n\n**Source (English):** a crowd gathered around a park water fountain in the rain .\n**Reference (German):** eine menschenmenge hat sich im regen um einen springbrunnen im park versammelt .\n**Greedy Translation:** eine menschenmenge versammelt sich im wasser versammelt .\n**Beam Translation:** eine menschenmenge versammelt sich im wasser versammelt .\n**Qualitative Analysis:** Acceptable translation: Partial semantic overlap; core meaning is somewhat captured but grammar may be flawed.\n\n---\n\n**Source (English):** a girl jumping rope on a sidewalk near a parking garage .\n**Reference (German):** ein mädchen beim seilhüpfen auf dem gehweg nahe einer garage .\n**Greedy Translation:** ein mädchen springt auf einem gehweg in der nähe eines seil s .\n**Beam Translation:** ein mädchen springt auf einem parkplatz in der nähe eines seil s .\n**Qualitative Analysis:** Acceptable translation: Partial semantic overlap; core meaning is somewhat captured but grammar may be flawed.\n\n---\n\n**Source (English):** a group of people are climbing in cold weather .\n**Reference (German):** eine gruppe klettert bei kaltem wetter .\n**Greedy Translation:** eine gruppe von menschen klettert an einem kalten kalten wintertag .\n**Beam Translation:** eine gruppe von menschen klettert an einem kalten wintertag hoch .\n**Qualitative Analysis:** Acceptable translation: Partial semantic overlap; core meaning is somewhat captured but grammar may be flawed.\n\n---\n\n
+**Source (English):** three boys wearing green shirts and tan pants pose at the top of a slide .
+**Reference (German):** drei jungen in grünen shirts und braunen hosen posieren auf dem oberteil einer rutsche .
+**Greedy Translation:** drei jungen in grünen hemden posieren auf einer grünen rutsche .
+**Beam Translation:** drei jungen in grünen hemden und hellbraunen hosen posieren auf einer rutsche .
+**Qualitative Analysis:** Acceptable translation: Partial semantic overlap; core meaning is somewhat captured but grammar may be flawed.
+
+---
+
+**Source (English):** a female performer with a violin plays on a street while a woman with a blue guitar looks on .
+**Reference (German):** eine musikantin mit einer violine spielt auf der straße während eine frau mit einer blauen gitarre zusieht .
+**Greedy Translation:** eine frau mit einer blauen gitarre spielt auf einer straße , während eine gitarre mit einer gitarre zuschaut .
+**Beam Translation:** eine frau mit einer blauen gitarre spielt auf einer straße , während eine gitarre zuschaut .
+**Qualitative Analysis:** Good translation: High lexical overlap; meaning is well preserved with minor syntactic differences.
+
+---
+
+**Source (English):** a crowd gathered around a park water fountain in the rain .
+**Reference (German):** eine menschenmenge hat sich im regen um einen springbrunnen im park versammelt .
+**Greedy Translation:** eine menschenmenge versammelt sich im wasser versammelt .
+**Beam Translation:** eine menschenmenge versammelt sich im wasser versammelt .
+**Qualitative Analysis:** Acceptable translation: Partial semantic overlap; core meaning is somewhat captured but grammar may be flawed.
+
+---
+
+**Source (English):** a girl jumping rope on a sidewalk near a parking garage .
+**Reference (German):** ein mädchen beim seilhüpfen auf dem gehweg nahe einer garage .
+**Greedy Translation:** ein mädchen springt auf einem gehweg in der nähe eines seil s .
+**Beam Translation:** ein mädchen springt auf einem parkplatz in der nähe eines seil s .
+**Qualitative Analysis:** Acceptable translation: Partial semantic overlap; core meaning is somewhat captured but grammar may be flawed.
+
+---
+
+**Source (English):** a group of people are climbing in cold weather .
+**Reference (German):** eine gruppe klettert bei kaltem wetter .
+**Greedy Translation:** eine gruppe von menschen klettert an einem kalten kalten wintertag .
+**Beam Translation:** eine gruppe von menschen klettert an einem kalten wintertag hoch .
+**Qualitative Analysis:** Acceptable translation: Partial semantic overlap; core meaning is somewhat captured but grammar may be flawed.
+
+---
+
+
 
 ## 8. Why Full Encoder-Decoder Architecture is Necessary for NMT
 ### Encoder-only vs Decoder-only vs Encoder-Decoder
