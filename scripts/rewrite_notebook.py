@@ -24,7 +24,11 @@ Neural Machine Translation using a full Encoder-Decoder Transformer implemented 
 ## 1. Introduction
 This project implements a full Sequence-to-Sequence (Seq2Seq) Transformer from scratch using PyTorch. We avoid using `torch.nn.Transformer` or any pretrained models. The model learns to translate English to German by utilizing Encoder blocks for source representation and Decoder blocks equipped with Cross-Attention for target generation."""))
 
-cells.append(new_code_cell("""import torch
+cells.append(new_code_cell("""import sys
+import os
+sys.path.append(os.path.abspath('..'))
+
+import torch
 from src.config import DEVICE
 
 print(f"Executing Notebook on Device: {DEVICE}")"""))

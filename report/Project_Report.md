@@ -54,12 +54,12 @@ The model was trained for 8 epochs using Adam optimizer and a Noam Learning Rate
 | BATCH SIZE | 32 |
 | MAX_LEN | 100 |
 
-**Actual Trainable Parameter Count:** 10,105,664
+**Actual Trainable Parameter Count:** N/A
 
 **Training Performance:**
-- Final Training Loss: 2.1165
-- Final Validation Loss: 2.5070
-- Best Validation Loss: 2.5070
+- Final Training Loss: N/A
+- Final Validation Loss: N/A
+- Best Validation Loss: N/A
 
 *(Please refer to `outputs/training_curve.png` for the complete visual loss curve).*
 
@@ -68,51 +68,11 @@ The model was trained for 8 epochs using Adam optimizer and a Noam Learning Rate
 **Quantitative BLEU Score Table:**
 | Decoding Strategy | BLEU Score |
 | --- | --- |
-| Greedy Decoding | 23.87 |
-| Beam Search Decoding | 24.65 |
+| Greedy Decoding | N/A |
+| Beam Search Decoding | N/A |
 
 **Five Sample Translations & Qualitative Analysis:**
-**Source (English):** three boys wearing green shirts and tan pants pose at the top of a slide .
-**Reference (German):** drei jungen in grünen shirts und braunen hosen posieren auf dem oberteil einer rutsche .
-**Greedy Translation:** drei jungen in grünen hemden posieren auf einer grünen rutsche .
-**Beam Translation:** drei jungen in grünen hemden und hellbraunen hosen posieren auf einer rutsche .
-**Qualitative Analysis:** Acceptable translation: Partial semantic overlap; core meaning is somewhat captured but grammar may be flawed.
-
----
-
-**Source (English):** a female performer with a violin plays on a street while a woman with a blue guitar looks on .
-**Reference (German):** eine musikantin mit einer violine spielt auf der straße während eine frau mit einer blauen gitarre zusieht .
-**Greedy Translation:** eine frau mit einer blauen gitarre spielt auf einer straße , während eine gitarre mit einer gitarre zuschaut .
-**Beam Translation:** eine frau mit einer blauen gitarre spielt auf einer straße , während eine gitarre zuschaut .
-**Qualitative Analysis:** Good translation: High lexical overlap; meaning is well preserved with minor syntactic differences.
-
----
-
-**Source (English):** a crowd gathered around a park water fountain in the rain .
-**Reference (German):** eine menschenmenge hat sich im regen um einen springbrunnen im park versammelt .
-**Greedy Translation:** eine menschenmenge versammelt sich im wasser versammelt .
-**Beam Translation:** eine menschenmenge versammelt sich im wasser versammelt .
-**Qualitative Analysis:** Acceptable translation: Partial semantic overlap; core meaning is somewhat captured but grammar may be flawed.
-
----
-
-**Source (English):** a girl jumping rope on a sidewalk near a parking garage .
-**Reference (German):** ein mädchen beim seilhüpfen auf dem gehweg nahe einer garage .
-**Greedy Translation:** ein mädchen springt auf einem gehweg in der nähe eines seil s .
-**Beam Translation:** ein mädchen springt auf einem parkplatz in der nähe eines seil s .
-**Qualitative Analysis:** Acceptable translation: Partial semantic overlap; core meaning is somewhat captured but grammar may be flawed.
-
----
-
-**Source (English):** a group of people are climbing in cold weather .
-**Reference (German):** eine gruppe klettert bei kaltem wetter .
-**Greedy Translation:** eine gruppe von menschen klettert an einem kalten kalten wintertag .
-**Beam Translation:** eine gruppe von menschen klettert an einem kalten wintertag hoch .
-**Qualitative Analysis:** Acceptable translation: Partial semantic overlap; core meaning is somewhat captured but grammar may be flawed.
-
----
-
-
+Run evaluate.py to generate sample translations.
 
 ## 8. Why Full Encoder-Decoder Architecture is Necessary for NMT
 ### Encoder-only vs Decoder-only vs Encoder-Decoder

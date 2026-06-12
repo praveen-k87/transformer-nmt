@@ -1,1 +1,0 @@
-Trainable parameters: 10,105,664\nFinal training loss: 2.1165\nFinal validation loss: 2.5070\nBest validation loss: 2.5070\n

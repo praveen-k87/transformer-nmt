@@ -29,11 +29,11 @@ def generate_report():
         df = pd.read_csv(output_dir / "sample_translations.csv")
         samples = df.sample(n=5, random_state=42)
         for _, row in samples.iterrows():
-            sample_table += f"**Source (English):** {row['source_english']}\\n"
-            sample_table += f"**Reference (German):** {row['reference_german']}\\n"
-            sample_table += f"**Greedy Translation:** {row['greedy_translation']}\\n"
-            sample_table += f"**Beam Translation:** {row['beam_translation']}\\n"
-            sample_table += f"**Qualitative Analysis:** {row['qualitative_comment']}\\n\\n---\\n\\n"
+            sample_table += f"**Source (English):** {row['source_english']}\n"
+            sample_table += f"**Reference (German):** {row['reference_german']}\n"
+            sample_table += f"**Greedy Translation:** {row['greedy_translation']}\n"
+            sample_table += f"**Beam Translation:** {row['beam_translation']}\n"
+            sample_table += f"**Qualitative Analysis:** {row['qualitative_comment']}\n\n---\n\n"
     except Exception:
         sample_table = "Run evaluate.py to generate sample translations."
 
