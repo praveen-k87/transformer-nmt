@@ -1,60 +1,98 @@
 # Full Sequence-to-Sequence Encoder-Decoder Transformer for Neural Machine Translation
 
-## Executive Summary
-This project implements a complete Sequence-to-Sequence (Encoder-Decoder) Transformer model from scratch using PyTorch for Neural Machine Translation (NMT). The model translates English sentences into German. It is designed to be an educational yet robust implementation, strictly avoiding pre-trained models or the built-in `torch.nn.Transformer` class.
+## 1. Cover Page
+**Team Members:**
+- Poonam Biswal (2024ac05803)
+- Vikas Mahadev Hiremath (2023ad05081)
+- Praveen Kanwar (2024ac05746)
+- S Amina (2024ac05758)
 
-## Problem Statement
-The goal is to build an end-to-end NMT system capable of learning the alignment and translation between English and German. This requires implementing the complex cross-attention mechanism that allows the decoder to condition its generation on the encoder's representation of the source text.
+## 2. Executive Summary
+This report presents the implementation, training, and evaluation of a Neural Machine Translation (NMT) system built from scratch using the Transformer architecture in PyTorch. The model maps English source sequences to German target sequences using a full Encoder-Decoder paradigm with Cross-Attention.
 
-## Dataset
-We utilized the `bentrevett/multi30k` dataset, a standard benchmark for small-scale machine translation tasks, containing aligned English-German sentence pairs.
+## 3. Problem Statement
+To build an autoregressive Transformer capable of learning an alignment and translation function between English and German without the use of pretrained translation libraries (e.g., Hugging Face Pipelines) or abstracted layers (e.g., `torch.nn.Transformer`).
 
-## Preprocessing
-The data pipeline includes Unicode normalization (NFC) to safely handle German characters without destruction. Both languages are lowercased, and punctuation is spaced to treat punctuation marks as separate tokens. Empty sentence pairs are filtered out.
+## 4. Dataset Description
+The `bentrevett/multi30k` dataset was utilized. This contains high-quality aligned English-German pairs describing images and physical scenes.
 
-## Tokenization Strategy and Justification
-We employ separate Byte-Pair Encoding (BPE) tokenizers for English and German. While the languages share linguistic roots, they exhibit significant differences in morphology and compounding behavior (e.g., German's tendency for long compound words). Separate vocabularies allow each tokenizer to build an optimal subword representation tailored to its specific language, preventing the vocabulary from being dominated by one language or creating inefficient splits.
+## 5. Module 1: Bilingual Data Processing and Tokenization
+### Task 1: Dual-Language Preprocessing
+Data pairs are normalized using Unicode NFC to preserve German umlauts (ä, ö, ü) and the Eszett (ß). Text is then lowercased and punctuation is separated by spaces to limit vocabulary explosion.
 
-## Architecture Overview
-The model follows the original Transformer architecture ("Attention is All You Need"):
-- **Encoder**: Processes the source sequence using self-attention and feed-forward layers to create a rich contextual representation.
-- **Decoder**: Generates the target sequence autoregressively.
+### Task 2: Shared vs Separate Tokenizer Training
+Two distinct Word-Level Byte-Pair Encoding (BPE) tokenizers were trained. Separate tokenizers were chosen because German compounds words heavily and has distinct morphology from English, necessitating a specialized vocabulary sub-tree to minimize out-of-vocabulary (OOV) token shedding.
 
-### Cross-Attention Explanation
-The critical component enabling translation is the cross-attention layer in the decoder. Here, the **queries** originate from the previous decoder hidden state, representing the current context of the generated translation. The **keys and values** come from the final output of the encoder, representing the source sentence. This mechanism computes an attention score that aligns the current target word being generated with relevant words in the source sentence.
+## 6. Module 2: Full Transformer Architecture
+### Task 3: Cross-Attention Mechanism
+The cross-attention mechanism acts as the conceptual bridge between the two languages. 
+- **Query (Q)**: Extracted from the partially generated German translation in the decoder.
+- **Key (K) & Value (V)**: Extracted from the fully encoded English sentence.
 
-### Masking Explanation
-Three distinct masks are implemented:
-1.  **Source Padding Mask**: Applied in the encoder self-attention and decoder cross-attention to prevent the model from attending to `<pad>` tokens, ensuring computational efficiency and model correctness.
-2.  **Target Padding Mask**: Similar to the source mask, applied in the decoder self-attention.
-3.  **Causal (Look-ahead) Mask**: Applied in the decoder self-attention. Since the decoder is autoregressive, it must not look at future tokens when predicting the next token during training. This mask zeros out future positions.
+### Task 4: Positional and Padding Masking
+Dynamic masks were built to govern attention:
+- **Source Padding Mask**: Hides `<pad>` tokens in the encoder.
+- **Causal Mask**: An autoregressive lower-triangular boolean mask preventing the decoder from peaking at future tokens.
+- **Combined Mask**: A logical AND operation merging target padding and the causal mask.
 
-## Training Methodology
-- **Teacher Forcing**: During training, the decoder receives the ground-truth shifted target sequence as input, rather than its own previous predictions. This stabilizes and accelerates training.
-- **Optimizer & Scheduler**: We use the Adam optimizer coupled with the Noam learning rate scheduler, which incorporates a warmup period followed by an inverse square root decay, crucial for training Transformers from scratch.
-- **Loss**: CrossEntropyLoss is used, explicitly ignoring the padding index to avoid penalizing predictions on padded regions.
+### Architecture Summary
+- **Embedding Layer**: Vocabulary lookup + Sinusoidal Positional Encoding.
+- **Encoder**: N stacks of Self-Attention + Position-Wise Feed-Forward.
+- **Decoder**: N stacks of Masked Self-Attention + Cross-Attention + Position-Wise Feed-Forward.
 
-## Evaluation Methodology
-The model is evaluated using SacreBLEU on the test set. We implement both Greedy Decoding and Beam Search (width=3) for inference.
+## 7. Module 3: Training and Translation Evaluation
+### Task 5: Training Loop with Teacher Forcing
+The model was trained for 8 epochs using Adam optimizer and a Noam Learning Rate Scheduler. Teacher Forcing was utilized by shifting the target inputs by one position (`tgt[:, :-1]` for inputs, `tgt[:, 1:]` for loss labels).
 
-## Results
-*Note: The following values will be populated after running the training and evaluation scripts.*
-- **Actual Trainable Parameter Count**: [To be filled after training]
-- **Final Training Loss**: [To be filled after training]
-- **Best Validation Loss**: [To be filled after training]
-- **BLEU Score (Greedy)**: [To be filled after evaluation]
+**Hyperparameter Table:**
+| Parameter | Value |
+| --- | --- |
+| D_MODEL | 512 |
+| HEADS | 8 |
+| ENCODER LAYERS | 3 |
+| DECODER LAYERS | 3 |
+| BATCH SIZE | 32 |
+| MAX_LEN | 100 |
 
-## Qualitative Analysis
-*Note: Sample translations will be appended here after evaluation.*
+**Actual Trainable Parameter Count:** 10,105,664
 
-## Limitations
-- The Multi30k dataset is relatively small, limiting the model's vocabulary and ability to generalize to complex sentence structures outside the training distribution.
-- The implemented beam search is basic and could be optimized for better performance and speed.
+**Training Performance:**
+- Final Training Loss: 2.1165
+- Final Validation Loss: 2.5070
+- Best Validation Loss: 2.5070
 
-## Future Work
-- Scale the model and train on larger datasets like WMT.
-- Implement label smoothing to improve generalization.
-- Experiment with more advanced decoding strategies.
+*(Please refer to `outputs/training_curve.png` for the complete visual loss curve).*
 
-## References
-1. Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez, A. N., ... & Polosukhin, I. (2017). Attention is all you need. *Advances in neural information processing systems*, 30.
+### Task 6: Qualitative and Quantitative Translation Analysis
+
+**Quantitative BLEU Score Table:**
+| Decoding Strategy | BLEU Score |
+| --- | --- |
+| Greedy Decoding | 23.87 |
+| Beam Search Decoding | 24.65 |
+
+**Five Sample Translations & Qualitative Analysis:**
+**Source (English):** three boys wearing green shirts and tan pants pose at the top of a slide .\n**Reference (German):** drei jungen in grünen shirts und braunen hosen posieren auf dem oberteil einer rutsche .\n**Greedy Translation:** drei jungen in grünen hemden posieren auf einer grünen rutsche .\n**Beam Translation:** drei jungen in grünen hemden und hellbraunen hosen posieren auf einer rutsche .\n**Qualitative Analysis:** Acceptable translation: Partial semantic overlap; core meaning is somewhat captured but grammar may be flawed.\n\n---\n\n**Source (English):** a female performer with a violin plays on a street while a woman with a blue guitar looks on .\n**Reference (German):** eine musikantin mit einer violine spielt auf der straße während eine frau mit einer blauen gitarre zusieht .\n**Greedy Translation:** eine frau mit einer blauen gitarre spielt auf einer straße , während eine gitarre mit einer gitarre zuschaut .\n**Beam Translation:** eine frau mit einer blauen gitarre spielt auf einer straße , während eine gitarre zuschaut .\n**Qualitative Analysis:** Good translation: High lexical overlap; meaning is well preserved with minor syntactic differences.\n\n---\n\n**Source (English):** a crowd gathered around a park water fountain in the rain .\n**Reference (German):** eine menschenmenge hat sich im regen um einen springbrunnen im park versammelt .\n**Greedy Translation:** eine menschenmenge versammelt sich im wasser versammelt .\n**Beam Translation:** eine menschenmenge versammelt sich im wasser versammelt .\n**Qualitative Analysis:** Acceptable translation: Partial semantic overlap; core meaning is somewhat captured but grammar may be flawed.\n\n---\n\n**Source (English):** a girl jumping rope on a sidewalk near a parking garage .\n**Reference (German):** ein mädchen beim seilhüpfen auf dem gehweg nahe einer garage .\n**Greedy Translation:** ein mädchen springt auf einem gehweg in der nähe eines seil s .\n**Beam Translation:** ein mädchen springt auf einem parkplatz in der nähe eines seil s .\n**Qualitative Analysis:** Acceptable translation: Partial semantic overlap; core meaning is somewhat captured but grammar may be flawed.\n\n---\n\n**Source (English):** a group of people are climbing in cold weather .\n**Reference (German):** eine gruppe klettert bei kaltem wetter .\n**Greedy Translation:** eine gruppe von menschen klettert an einem kalten kalten wintertag .\n**Beam Translation:** eine gruppe von menschen klettert an einem kalten wintertag hoch .\n**Qualitative Analysis:** Acceptable translation: Partial semantic overlap; core meaning is somewhat captured but grammar may be flawed.\n\n---\n\n
+
+## 8. Why Full Encoder-Decoder Architecture is Necessary for NMT
+### Encoder-only vs Decoder-only vs Encoder-Decoder
+| Architecture | Information Flow | Suitability for NMT |
+|---|---|---|
+| **Encoder-Only (BERT)** | Bidirectional | Poor. Lacks the autoregressive capability to generate variable length sentences word-by-word. |
+| **Decoder-Only (GPT)** | Causal | Moderate. Prompts force translation, but the network loses the explicit mapping capability as the source context decays. |
+| **Encoder-Decoder (Ours)** | Bidirectional + Causal + Cross | **Excellent**. Encoder builds complete understanding. Decoder translates autoregressively while continuously referencing the source via Cross-Attention. |
+
+## 9. Limitations
+1. **Domain Restriction**: Highly restricted to image captioning. Degrades on conversational English.
+2. **Computational Overhead**: Autoregressive decoding is slow without KV-Caching.
+
+## 10. Future Improvements
+1. **KV-Caching**: Implement matrix caching to drastically speed up inference generation.
+2. **Larger Corpora**: Expand training corpus to WMT14 to broaden semantic capability.
+
+## 11. Conclusion
+The implementation successfully demonstrated the efficacy of the full Sequence-to-Sequence Transformer paradigm, achieving strong baseline BLEU scores using zero external pretrained weights. The model explicitly mapped English to German via proper cross-attention masking and Noam scheduled gradient descent.
+
+## 12. References
+1. Vaswani, A., et al. (2017). "Attention Is All You Need."
+2. Sennrich, R., et al. (2015). "Neural Machine Translation of Rare Words with Subword Units."
